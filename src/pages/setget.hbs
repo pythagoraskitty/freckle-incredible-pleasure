@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/favicon.ico?v=1709751697719" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shared Storage Demo: set-get function</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/inner-style.css"/>
+    <script src="/code-box"></script>
+  </head>
+  <body>
+    
+    <!-- this is the start of content -->
+
+    <h2>
+      Shared Storage Demo: set-get function
+    </h2>
+    
+    <script src="/utils"></script>
+    
+    <script id="main">
+      function runSetGet(index) {
+        const fencedFrame = document.createElement('fencedframe');
+          window.sharedStorage.createWorklet('/setget-module.js') 
+           .then((worklet) => {
+              return worklet.selectURL( 
+                'set-get', 
+                generateURLs('/setget-inner', 8),
+                { 
+                  data: { 
+                    'x': '1', 
+                    'y': '2', 
+                    'z': '1'
+                  }, 
+                  savedQuery: "setget",
+                  resolveToConfig: true 
+                } 
+              ); 
+            }) 
+            .then((frameConfig) => { 
+              fencedFrame.config = frameConfig;
+            }) 
+            .catch((error) => { 
+              console.error("Error in fenced frame creation for index:", index, error); 
+            }); 
+        fencedFrame.style.display = 'none';
+        document.body.append(fencedFrame);
+      }
+      
+      for (let i = 0; i < 111; i++) {
+        runSetGet(i);
+      } 
+    </script>
+    
+    <h3>
+      Client Shared Storage Module:
+      <br id="breakForModule"><code-box>{{scriptText}}</code-box>
+    </h3>
+    
+    <h3>
+      Client Main JavaScript:
+      <br id="breakForCode"><script>displayScriptInCodeBoxAfterElement('main', 'breakForCode');</script>
+    </h3>
+    <script src="/dark-mode"></script>
+  </body>
+</html>
